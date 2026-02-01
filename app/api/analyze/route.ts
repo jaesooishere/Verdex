@@ -35,27 +35,9 @@ export async function POST(req: Request) {
     const body: BusinessFormData = await req.json()
     const { description, businessType, businessStage, userProfile, budgetRange } = body
 
-    // Debug: log all env vars that contain useful keywords
-    const allEnvKeys = Object.keys(process.env)
-    console.log("[v0] Total env vars:", allEnvKeys.length)
-    console.log("[v0] GOOGLE vars:", allEnvKeys.filter(k => k.toUpperCase().includes('GOOGLE')))
-    console.log("[v0] API vars:", allEnvKeys.filter(k => k.toUpperCase().includes('API')))
-    console.log("[v0] KEY vars:", allEnvKeys.filter(k => k.toUpperCase().includes('KEY')))
-    console.log("[v0] GENERATIVE vars:", allEnvKeys.filter(k => k.toUpperCase().includes('GENERATIVE')))
-    
     const apiKey = process.env.GOOGLE_GENERATIVE_AI_API_KEY
-    console.log("[v0] GOOGLE_GENERATIVE_AI_API_KEY exists:", !!apiKey, "length:", apiKey?.length || 0)
-    
     if (!apiKey) {
-      // Return more debug info in error response
-      return Response.json({ 
-        error: "API key not configured",
-        debug: {
-          totalEnvVars: allEnvKeys.length,
-          googleVars: allEnvKeys.filter(k => k.toUpperCase().includes('GOOGLE')),
-          keyVars: allEnvKeys.filter(k => k.toUpperCase().includes('KEY')),
-        }
-      }, { status: 500 })
+      return Response.json({ error: "API key not configured" }, { status: 500 })
     }
 
     const genAI = new GoogleGenerativeAI(apiKey)
