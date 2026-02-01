@@ -31,12 +31,16 @@ async function callWithRetry<T>(
 }
 
 export async function POST(req: Request) {
+  console.log("[v0] API route hit - starting analysis")
   try {
     const body: BusinessFormData = await req.json()
+    console.log("[v0] Request body parsed:", { businessType: body.businessType, businessStage: body.businessStage })
     const { description, businessType, businessStage, userProfile, budgetRange } = body
 
     const apiKey = process.env.GOOGLE_GENERATIVE_AI_API_KEY
+    console.log("[v0] API key check:", !!apiKey, "length:", apiKey?.length || 0)
     if (!apiKey) {
+      console.log("[v0] No API key found!")
       return Response.json({ error: "API key not configured" }, { status: 500 })
     }
 
