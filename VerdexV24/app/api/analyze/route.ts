@@ -37,6 +37,8 @@ export async function POST(req: Request) {
     const { description, businessType, businessStage, userProfile, budgetRange } = body
 
     const apiKey = process.env.GOOGLE_GENERATIVE_AI_API_KEY
+    console.log("[v0] Checking API key - exists:", !!apiKey, "length:", apiKey?.length || 0)
+    console.log("[v0] All env keys:", Object.keys(process.env).filter(k => k.includes('GOOGLE') || k.includes('API')))
     if (!apiKey) {
       return Response.json({ error: "API key not configured" }, { status: 500 })
     }
