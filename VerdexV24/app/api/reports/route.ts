@@ -15,7 +15,7 @@ export async function POST(req: Request) {
   const { data, error } = await supabase
     .from("saved_reports")
     .select("*")
-    .eq("user_id", body.userId);
+    .eq("user_id", user.id);
   if (error) return Response.json({ error: error.message }, { status: 500 });
   return Response.json(data);
 }
