@@ -9,6 +9,11 @@ const supabaseAdmin = createClient(
 );
 
 export async function POST(req: Request) {
+  const { data: { user }, error: authError } = await supabaseAdmin.auth.getUser();
+  if (authError || !user) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+  const { data: profile } = await supabaseAdmin
+    .from("users").select("plan").eq("id", user.id).single();
+  if (profile?.plan !== "admin") return NextResponse.json({ error: "Forbidden" }, { status: 403 });
   const { isAdmin, reportId } = await req.json();
 
   // Only admins may purge reports.
