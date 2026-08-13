@@ -8,13 +8,16 @@ const supabaseAdmin = createClient(
 )
 
 export async function POST(req: Request) {
+  if (!process.env.STRIPE_WEBHOOK_SECRET) {
+    return new Response("Webhook secret is not configured", { status: 500 });
+  }
   const body = await req.text()
   const signature = req.headers.get("stripe-signature")
 
   const event = stripe.webhooks.constructEvent(
     body,
     signature!,
-    process.env.STRIPE_WEBHOOK_SECRET ?? ""
+    process.env.STRIPE_WEBHOOK_SECRET
   )
 
   if (event.type === "checkout.session.completed") {
